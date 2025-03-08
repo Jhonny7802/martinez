@@ -34,7 +34,7 @@
         <tr>
             <td>
                 <p class="regards-mb-4">Regards,</p>
-                <p class="regards-mt-4">InfyCRM</p>
+                <p class="regards-mt-4"></p>
             </td>
         </tr>
         <tr>

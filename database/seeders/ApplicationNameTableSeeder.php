@@ -15,6 +15,6 @@ class ApplicationNameTableSeeder extends Seeder
     public function run()
     {
         $applicationName = Setting::where(['key' => 'company_name', 'group' => Setting::GROUP_GENERAL])->first();
-        $applicationName->update(['value' => 'InfyCRM']);
+        $applicationName->update(['value' => 'Constructora']);
     }
 }

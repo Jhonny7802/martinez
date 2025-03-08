@@ -5,7 +5,10 @@
             <img class="navbar-brand-full w-25"
                  src="{{ getAppLogo() ?? asset('img/infyom-logo.png') }}" width="50px"
                  alt="">&nbsp;&nbsp;
-            <span class="navbar-brand-full-name text-black text-wrap pl-2 w-75">{{ getAppName() }}</span>
+            <span class="navbar-brand-full-name text-black text-wrap pl-2 w-75">
+            <img src="{{ asset('assets/img/infyom-logo.png') }}" alt="logo" width="100"
+                             class="shadow-light">    
+            {{ getAppName() }}</span>
         </a>
         <div class="input-group sidebar-search-box">
             <input type="text" class="form-control searchTerm" id="searchText" placeholder="{{ __('messages.placeholder.search_menu') }}">

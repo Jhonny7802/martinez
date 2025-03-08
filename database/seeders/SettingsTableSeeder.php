@@ -27,7 +27,7 @@ class SettingsTableSeeder extends Seeder
             'group' => Setting::GROUP_GENERAL,
         ]);
         Setting::create(['key' => 'term_and_conditions',
-            'value' => 'This Infycrm project is follow all term and conditions and privacy.',
+            'value' => 'This project is follow all term and conditions and privacy.',
             'group' => Setting::GROUP_GENERAL,
         ]);
         Setting::create(['key' => 'company', 'value' => 'InfyOmLabs', 'group' => Setting::COMPANY_INFORMATION]);
@@ -52,10 +52,10 @@ class SettingsTableSeeder extends Seeder
         ]);
         Setting::create([
             'key' => 'admin_note',
-            'value' => 'This is the admin note of the InfyCRM project.', 'group' => Setting::NOTE,
+            'value' => 'This is the admin note of the project.', 'group' => Setting::NOTE,
         ]);
         Setting::create([
-            'key' => 'client_note', 'value' => 'This is the client note of the InfyCRM project.',
+            'key' => 'client_note', 'value' => 'This is the client note of the project.',
             'group' => Setting::NOTE,
         ]);
     }

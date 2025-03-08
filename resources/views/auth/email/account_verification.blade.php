@@ -38,7 +38,7 @@
         </tr>
         <tr>
             <td>
-                <p>Thank you for using InfyCRM!</p>
+                <p>Thank you for using!</p>
             </td>
         </tr>
         <tr>

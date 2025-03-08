@@ -19,7 +19,7 @@ class AdminUserSeeder extends Seeder
         $input = [
             'first_name' => 'Super',
             'last_name' => 'Admin',
-            'email' => 'admin@infycrm.com',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('123456'),
             'phone' => '+917878454512',
             'is_enable' => true,

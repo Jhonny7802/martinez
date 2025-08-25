@@ -13,10 +13,20 @@
         {{ Form::label('user_id', __('messages.members').':') }}<span class="required">*</span>
         {{ Form::select('users[]',$members, null, ['class' => 'form-control staffMember','required','multiple' => true]) }}
     </div>
-    <div class="form-group col-sm-6">
-        {{ Form::label('achievement',__('messages.goal.achievement').':') }}<span class="required">*</span>
-        {{ Form::number('achievement', null, ['class' => 'form-control','required','autocomplete' => 'off','placeholder'=>__('messages.goal.achievement')]) }}
+<div class="form-group col-sm-6">
+    {{ Form::label('achievement',__('messages.goal.achievement').':') }}<span class="required">*</span>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+        {{ Form::number('achievement', null, ['class' => 'form-control','required','autocomplete' => 'off','placeholder'=>'Ej: 1000.00', 'min' => '1', 'step' => '0.01']) }}
     </div>
+    <small class="form-text text-muted" id="achievement-help">
+        <span id="achievement-text">Meta en dólares para el objetivo</span>
+    </small>
+</div>
 </div>
 <div class="row">
     <div class="form-group col-sm-12 col-lg-6 col-md-12">
@@ -72,3 +82,26 @@
     </div>
 </div>
 
+<script>
+$(document).ready(function() {
+    function updateAchievementField() {
+        const goalType = $('#goalTypeId, #editGoalTypeId').val();
+        const $achievementInput = $('input[name="achievement"]');
+        
+        switch(goalType) {
+            case '2': // Invoice Amount
+                $achievementInput.attr('placeholder', 'Ej: 10000.00');
+                break;
+            case '3': // Convert X Lead
+                $achievementInput.attr('placeholder', 'Ej: 50');
+                break;
+            case '4': // Increase Customer Number
+                $achievementInput.attr('placeholder', 'Ej: 25');
+                break;
+        }
+    }
+    
+    updateAchievementField();
+    $('#goalTypeId, #editGoalTypeId').on('change', updateAchievementField);
+});
+</script>

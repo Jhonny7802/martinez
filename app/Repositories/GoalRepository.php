@@ -159,37 +159,100 @@ class GoalRepository extends BaseRepository
         return User::orderBy('first_name')->whereIsEnable(true)->user()->get()->pluck('full_name', 'id')->toArray();
     }
 
+    /**
+     * MÉTODO CORREGIDO - Calcula el progreso del objetivo
+     * 
+     * @param array $data
+     * @return float|int
+     */
     public function countGoalProgress($data)
     {
         $startDate = $data['start_date'];
         $endDate = $data['end_date'];
-        $achievement = $data['achievement'];
+        $achievement = (float) $data['achievement'];
+        $goalMembers = $data['goal_members'] ?? [];
 
-        if ($data['goal_ype'] == Goal::INVOICE_AMOUNT) {
-            $goalCountByInvoice = Invoice::wherePaymentStatus(Invoice::STATUS_PAID)->whereBetween('invoice_date',
-                [$startDate, $endDate])->sum('total_amount');
+        // Validaciones básicas
+        if ($achievement <= 0) {
+            return 0;
+        }
 
-            if ($goalCountByInvoice >= $achievement) {
-                return '100';
-            } else {
-                return number_format(($goalCountByInvoice * 100) / $achievement);
+        try {
+            // CORREGIDO: goal_type en lugar de goal_ype
+            if ($data['goal_type'] == Goal::INVOICE_AMOUNT) {
+                return $this->calculateInvoiceGoalProgress($startDate, $endDate, $achievement, $goalMembers);
+                
+            } elseif ($data['goal_type'] == Goal::CONVERT_X_LEAD) {
+                return $this->calculateLeadConversionProgress($startDate, $endDate, $achievement, $goalMembers);
+                
+            } elseif ($data['goal_type'] == Goal::INCREASE_CUSTOMER_NUMBER) {
+                return $this->calculateCustomerGrowthProgress($startDate, $endDate, $achievement, $goalMembers);
             }
-        } elseif ($data['goal_ype'] == Goal::CONVERT_X_LEAD) {
-            $convertXLeads = Lead::whereLeadConvertCustomer(true)->whereBetween('lead_convert_date',
-                [$startDate, $endDate])->count();
-            if ($convertXLeads >= $achievement) {
-                return '100';
-            } else {
-                return number_format(($convertXLeads * 100) / $achievement);
-            }
-        } elseif ($data['goal_ype'] == Goal::INCREASE_CUSTOMER_NUMBER) {
-            $customers = Customer::whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=',
-                $endDate)->count();
-            if ($customers >= $achievement) {
-                return '100';
-            } else {
-                return number_format(($customers * 100) / $achievement);
-            }
+
+            return 0;
+            
+        } catch (\Exception $e) {
+            \Log::error('Error calculating goal progress: ' . $e->getMessage());
+            return 0;
         }
     }
+
+    /**
+     * Calcular progreso para objetivos de facturación
+     */
+    private function calculateInvoiceGoalProgress($startDate, $endDate, $achievement, $goalMembers)
+    {
+        $query = Invoice::wherePaymentStatus(Invoice::STATUS_PAID)
+            ->whereBetween('invoice_date', [$startDate, $endDate]);
+
+        // Si hay miembros específicos del objetivo, filtrar por ellos
+        if (!empty($goalMembers)) {
+            $query->whereIn('sales_agent_id', $goalMembers);
+        }
+
+        $currentAmount = $query->sum('total_amount');
+
+        // Calcular porcentaje progresivo (no binario)
+        $percentage = ($currentAmount / $achievement) * 100;
+        
+        // Devolver número decimal, limitado a 100%
+        return min(round($percentage, 2), 100);
+    }
+
+    /**
+     * Calcular progreso para conversión de leads
+     */
+    private function calculateLeadConversionProgress($startDate, $endDate, $achievement, $goalMembers)
+    {
+        $query = Lead::whereLeadConvertCustomer(true)
+            ->whereBetween('lead_convert_date', [$startDate, $endDate]);
+
+        if (!empty($goalMembers)) {
+            $query->whereIn('sales_agent_id', $goalMembers);
+        }
+
+        $convertedLeads = $query->count();
+
+        $percentage = ($convertedLeads / $achievement) * 100;
+        return min(round($percentage, 2), 100);
+    }
+
+    /**
+     * Calcular progreso para crecimiento de clientes
+     */
+    private function calculateCustomerGrowthProgress($startDate, $endDate, $achievement, $goalMembers)
+    {
+        $query = Customer::whereDate('created_at', '>=', $startDate)
+            ->whereDate('created_at', '<=', $endDate);
+
+        if (!empty($goalMembers)) {
+            $query->whereIn('sales_agent_id', $goalMembers);
+        }
+
+        $newCustomers = $query->count();
+
+        $percentage = ($newCustomers / $achievement) * 100;
+        return min(round($percentage, 2), 100);
+    }
+
 }

@@ -137,7 +137,8 @@ class Goal extends Model
      */
     public function getGoalProgressCountAttribute()
     {
-        $data['goal_ype'] = $this->goal_type;
+        $data['goal_type'] = $this->goal_type;
+$data['goal_members'] = $this->goalMembers->pluck('id')->toArray();
         $data['start_date'] = Carbon::parse($this->start_date)->format('Y-m-d');
         $data['end_date'] = Carbon::parse($this->end_date)->format('Y-m-d');
         $data['achievement'] = $this->achievement;

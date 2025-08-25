@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -13,9 +14,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->dateTime('start_date')->change()->nullable();
-        });
+        // Usar DB::statement para evitar problemas de compatibilidad con Doctrine DBAL
+        DB::statement('ALTER TABLE tasks MODIFY start_date DATETIME NULL');
     }
 
     /**

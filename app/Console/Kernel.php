@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\AnnouncementReminder::class,
+        Commands\CreateSuperAdminCommand::class,
         ReminderMainSend::class,
     ];
 

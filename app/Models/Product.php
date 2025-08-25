@@ -55,6 +55,16 @@ class Product extends Model
         'tax_1_id',
         'tax_2_id',
         'item_group_id',
+        'stock_quantity',
+        'minimum_stock',
+        'maximum_stock',
+        'unit_of_measure',
+        'location',
+        'cost_price',
+        'supplier',
+        'barcode',
+        'status',
+        'notes',
     ];
 
     /**
@@ -84,6 +94,10 @@ class Product extends Model
         'tax_1_id' => 'integer',
         'tax_2_id' => 'integer',
         'item_group_id' => 'integer',
+        'stock_quantity' => 'integer',
+        'minimum_stock' => 'integer',
+        'maximum_stock' => 'integer',
+        'cost_price' => 'decimal:2',
     ];
 
     /**
@@ -108,5 +122,77 @@ class Product extends Model
     public function group(): BelongsTo
     {
         return $this->belongsTo(ProductGroup::class, 'item_group_id');
+    }
+
+    public function requisitionItems()
+    {
+        return $this->hasMany(MaterialRequisitionItem::class, 'item_id');
+    }
+
+    public function inventoryMovements()
+    {
+        return $this->hasMany(InventoryMovement::class, 'item_id');
+    }
+
+    public function isLowStock()
+    {
+        return $this->stock_quantity <= $this->minimum_stock;
+    }
+
+    public function isOutOfStock()
+    {
+        return $this->stock_quantity <= 0;
+    }
+
+    public function getStockStatusAttribute()
+    {
+        if ($this->isOutOfStock()) {
+            return 'out_of_stock';
+        } elseif ($this->isLowStock()) {
+            return 'low_stock';
+        }
+        return 'in_stock';
+    }
+
+    public function getStockStatusColorAttribute()
+    {
+        return [
+            'out_of_stock' => 'danger',
+            'low_stock' => 'warning',
+            'in_stock' => 'success'
+        ][$this->stock_status] ?? 'secondary';
+    }
+
+    public function getStockStatusLabelAttribute()
+    {
+        return [
+            'out_of_stock' => 'Sin Stock',
+            'low_stock' => 'Stock Bajo',
+            'in_stock' => 'En Stock'
+        ][$this->stock_status] ?? 'N/A';
+    }
+
+    public static function getLowStockItems($limit = null)
+    {
+        $query = self::whereColumn('stock_quantity', '<=', 'minimum_stock')
+                     ->where('status', 'active');
+        
+        if ($limit) {
+            $query->limit($limit);
+        }
+        
+        return $query->get();
+    }
+
+    public static function getOutOfStockItems($limit = null)
+    {
+        $query = self::where('stock_quantity', '<=', 0)
+                     ->where('status', 'active');
+        
+        if ($limit) {
+            $query->limit($limit);
+        }
+        
+        return $query->get();
     }
 }

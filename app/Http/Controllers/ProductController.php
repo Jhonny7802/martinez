@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\InventoryMovement;
 use App\Queries\ProductDataTable;
 use App\Repositories\ProductRepository;
 use Exception;
@@ -12,6 +13,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class ProductController extends AppBaseController
@@ -101,5 +103,77 @@ class ProductController extends AppBaseController
         $product->delete();
 
         return $this->sendSuccess('Product deleted successfully.');
+    }
+
+    /**
+     * Get low stock items
+     */
+    public function getLowStock()
+    {
+        $lowStockItems = Product::getLowStockItems(10);
+        return response()->json($lowStockItems);
+    }
+
+    /**
+     * Get out of stock items
+     */
+    public function getOutOfStock()
+    {
+        $outOfStockItems = Product::getOutOfStockItems(10);
+        return response()->json($outOfStockItems);
+    }
+
+    /**
+     * Get inventory movements for a product
+     */
+    public function getMovements(Product $product)
+    {
+        $movements = $product->inventoryMovements()
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        return response()->json($movements);
+    }
+
+    /**
+     * Adjust stock for a product
+     */
+    public function adjustStock(Request $request, Product $product)
+    {
+        $request->validate([
+            'adjustment_type' => 'required|in:set,add,subtract',
+            'quantity' => 'required|integer|min:0',
+            'reason' => 'required|string|max:255'
+        ]);
+
+        $previousStock = $product->stock_quantity;
+        $newStock = match($request->adjustment_type) {
+            'set' => $request->quantity,
+            'add' => $previousStock + $request->quantity,
+            'subtract' => max(0, $previousStock - $request->quantity),
+            default => $previousStock
+        };
+
+        $product->update(['stock_quantity' => $newStock]);
+
+        // Record movement
+        InventoryMovement::create([
+            'item_id' => $product->id,
+            'movement_type' => 'adjustment',
+            'quantity' => abs($newStock - $previousStock),
+            'previous_stock' => $previousStock,
+            'new_stock' => $newStock,
+            'reference_type' => 'manual_adjustment',
+            'user_id' => Auth::id(),
+            'notes' => $request->reason
+        ]);
+
+        activity()->performedOn($product)->causedBy(Auth::user())
+            ->useLog('Stock Adjustment')
+            ->log("Stock adjusted from {$previousStock} to {$newStock}. Reason: {$request->reason}");
+
+        return $this->sendSuccess('Stock ajustado exitosamente');
     }
 }

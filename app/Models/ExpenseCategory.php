@@ -71,4 +71,14 @@ class ExpenseCategory extends Model
     {
         return $this->hasMany(Expense::class, 'expense_category_id');
     }
+    
+    /**
+     * Get the budget expenses for this category.
+     *
+     * @return HasMany
+     */
+    public function budgetExpenses(): HasMany
+    {
+        return $this->hasMany(BudgetExpense::class, 'category_id');
+    }
 }

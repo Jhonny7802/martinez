@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use Closure;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
@@ -95,6 +96,13 @@ class Server
      * @var array
      */
     protected $presets = [];
+
+    /**
+     * Custom cache path callable.
+     *
+     * @var \Closure|null
+     */
+    protected $cachePathCallable;
 
     /**
      * Create Server instance.
@@ -340,15 +348,44 @@ class Server
     }
 
     /**
+     * Set a custom cachePathCallable.
+     *
+     * @param \Closure|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
+     */
+    public function setCachePathCallable(?Closure $cachePathCallable)
+    {
+        $this->cachePathCallable = $cachePathCallable;
+    }
+
+    /**
+     * Gets the custom cachePathCallable.
+     *
+     * @return \Closure|null The custom cache path callable. It receives the same arguments as @see getCachePath
+     */
+    public function getCachePathCallable()
+    {
+        return $this->cachePathCallable;
+    }
+
+    /**
      * Get cache path.
      *
      * @param string $path   Image path.
      * @param array  $params Image manipulation params.
      *
      * @return string Cache path.
+     *
+     * @throws FileNotFoundException
      */
     public function getCachePath($path, array $params = [])
     {
+        $customCallable = $this->getCachePathCallable();
+        if (null !== $customCallable) {
+            $boundCallable = Closure::bind($customCallable, $this, static::class);
+
+            return $boundCallable($path, $params);
+        }
+
         $sourcePath = $this->getSourcePath($path);
 
         if ($this->sourcePathPrefix) {
@@ -359,9 +396,11 @@ class Server
         unset($params['s'], $params['p']);
         ksort($params);
 
-        $md5 = md5($sourcePath.'?'.http_build_query($params));
+        $cachedPath = md5($sourcePath.'?'.http_build_query($params));
 
-        $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
+        if ($this->groupCacheInFolders) {
+            $cachedPath = $sourcePath.'/'.$cachedPath;
+        }
 
         if ($this->cachePathPrefix) {
             $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
@@ -514,7 +553,7 @@ class Server
      *
      * @return void
      */
-    public function setResponseFactory(ResponseFactoryInterface $responseFactory = null)
+    public function setResponseFactory(?ResponseFactoryInterface $responseFactory = null)
     {
         $this->responseFactory = $responseFactory;
     }
@@ -538,6 +577,8 @@ class Server
      * @return mixed Image response.
      *
      * @throws InvalidArgumentException
+     * @throws FileNotFoundException
+     * @throws FilesystemException
      */
     public function getImageResponse($path, array $params)
     {
@@ -558,6 +599,7 @@ class Server
      *
      * @return string Base64 encoded image.
      *
+     * @throws FileNotFoundException
      * @throws FilesystemException
      */
     public function getImageAsBase64($path, array $params)
@@ -580,6 +622,8 @@ class Server
      * @param array  $params Image manipulation params.
      *
      * @throws InvalidArgumentException
+     * @throws FileNotFoundException
+     * @throws FilesystemException
      *
      * @return void
      */
@@ -652,7 +696,7 @@ class Server
                 $this->api->run($tmp, $this->getAllParams($params))
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not write the image `'.$cachedPath.'`.');
+            throw new FilesystemException('Could not write the image `'.$cachedPath.'`.', 0, $exception);
         } finally {
             unlink($tmp);
         }

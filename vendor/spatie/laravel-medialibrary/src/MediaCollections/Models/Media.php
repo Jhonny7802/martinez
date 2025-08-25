@@ -3,7 +3,6 @@
 namespace Spatie\MediaLibrary\MediaCollections\Models;
 
 use DateTimeInterface;
-use Illuminate\Contracts\Mail\Attachable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +10,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Mail\Attachment;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\Conversions\Conversion;
@@ -39,7 +37,7 @@ use Spatie\MediaLibraryPro\Models\TemporaryUpload;
  * @property-read string $previewUrl
  * @property-read string $originalUrl
  */
-class Media extends Model implements Responsable, Htmlable, Attachable
+class Media extends Model implements Responsable, Htmlable
 {
     use IsSorted;
     use CustomMediaProperties;
@@ -96,10 +94,6 @@ class Media extends Model implements Responsable, Htmlable, Attachable
         return $urlGenerator->getPath();
     }
 
-    public function getPathRelativeToRoot(string $conversionName = ''): string
-    {
-        return $this->getUrlGenerator($conversionName)->getPathRelativeToRoot();
-    }
 
     public function getUrlGenerator(string $conversionName): UrlGenerator
     {
@@ -220,7 +214,6 @@ class Media extends Model implements Responsable, Htmlable, Attachable
 
     /**
      * @param mixed $value
-     *
      * @return $this
      */
     public function setCustomProperty(string $name, $value): self
@@ -434,21 +427,5 @@ class Media extends Model implements Responsable, Htmlable, Attachable
                 fn (Builder $builder) => $builder->where('session_id', session()->getId())
             )
             ->get();
-    }
-
-    public function mailAttachment(string $conversion = ''): Attachment
-    {
-        $attachment = Attachment::fromStorageDisk($this->disk, $this->getPathRelativeToRoot($conversion))->as($this->file_name);
-
-        if ($this->mime_type) {
-            $attachment->withMime($this->mime_type);
-        }
-
-        return $attachment;
-    }
-
-    public function toMailAttachment(): Attachment
-    {
-        return $this->mailAttachment();
     }
 }

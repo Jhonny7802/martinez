@@ -5,7 +5,6 @@ namespace Spatie\MediaLibrary\MediaCollections;
 use Illuminate\Contracts\Support\Htmlable;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\Image;
-use Spatie\MediaLibrary\Conversions\ImageGenerators\ImageGeneratorFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class HtmlableMedia implements Htmlable, \Stringable
@@ -44,9 +43,7 @@ class HtmlableMedia implements Htmlable, \Stringable
 
     public function toHtml()
     {
-        $imageGenerator = ImageGeneratorFactory::forMedia($this->media) ?? new Image();
-
-        if (! $imageGenerator->canHandleMime($this->media->mime_type)) {
+        if (! (new Image())->canHandleMime($this->media->mime_type)) {
             return '';
         }
 

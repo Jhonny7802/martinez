@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -13,9 +14,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            $table->text('properties')->change();
-        });
+        // Usar DB::statement para evitar problemas de compatibilidad con Doctrine DBAL
+        DB::statement('ALTER TABLE activity_log MODIFY properties TEXT');
     }
 
     /**
@@ -25,8 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            //
-        });
+        // Rollback usando DB::statement
+        DB::statement('ALTER TABLE activity_log MODIFY properties JSON');
     }
 };

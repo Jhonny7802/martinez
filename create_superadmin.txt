@@ -1,0 +1,19 @@
+$user = \App\Models\User::updateOrCreate(['email' => 'superadmin@martinez.com'], [
+    'first_name' => 'Super',
+    'last_name' => 'Admin',
+    'email' => 'superadmin@martinez.com',
+    'password' => \Illuminate\Support\Facades\Hash::make('superadmin123'),
+    'phone' => '12345678',
+    'email_verified_at' => now(),
+    'is_active' => true,
+]);
+
+$adminRole = \Spatie\Permission\Models\Role::where('name', 'admin')->first();
+$user->assignRole($adminRole);
+
+$permissions = \Spatie\Permission\Models\Permission::all();
+foreach ($permissions as $permission) {
+    $user->givePermissionTo($permission->name);
+}
+
+echo "Usuario superadmin creado con éxito!";

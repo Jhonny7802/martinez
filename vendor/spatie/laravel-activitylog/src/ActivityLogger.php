@@ -133,7 +133,7 @@ class ActivityLogger
         return $this->useLog($logName);
     }
 
-    public function tap(callable $callback, string $eventName = null): static
+    public function tap(callable $callback, ?string $eventName = null): static
     {
         call_user_func($callback, $this->getActivity(), $eventName);
 
@@ -195,7 +195,7 @@ class ActivityLogger
 
     protected function replacePlaceholders(string $description, ActivityContract $activity): string
     {
-        return preg_replace_callback('/:[a-z0-9._-]+/i', function ($match) use ($activity) {
+        return preg_replace_callback('/:[a-z0-9._-]+(?<![.])/i', function ($match) use ($activity) {
             $match = $match[0];
 
             $attribute = Str::before(Str::after($match, ':'), '.');

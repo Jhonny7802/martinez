@@ -12,14 +12,9 @@ class LogReader
 {
     /**
      * Cached LogReader instances.
-     *
-     * @var array
      */
     public static array $_instances = [];
 
-    /**
-     * @var LogFile
-     */
     protected LogFile $file;
 
     /**
@@ -74,7 +69,6 @@ class LogReader
      * @alias setLevels
      *
      * @param  string|array|null  $levels
-     * @return self
      */
     public function only($levels = null): self
     {
@@ -85,7 +79,6 @@ class LogReader
      * Load only the provided log levels
      *
      * @param  string|array|null  $levels
-     * @return self
      */
     public function setLevels($levels = null): self
     {
@@ -125,7 +118,7 @@ class LogReader
         $levels = null;
 
         if (is_array($levels)) {
-            $levels = array_map('strtolower', $levels);
+            $levels = array_map('strtolower', array_filter($levels));
             $levels = array_diff(self::getDefaultLevels(), $levels);
         } elseif (is_string($levels)) {
             $level = strtolower($levels);
@@ -303,8 +296,8 @@ class LogReader
         $logIndex = $this->index();
         $levels = self::getDefaultLevels();
         $logMatchPattern = LogViewer::logMatchPattern();
-        $earliest_timestamp = $this->file->getMetaData('earliest_timestamp');
-        $latest_timestamp = $this->file->getMetaData('latest_timestamp');
+        $earliest_timestamp = $this->file->getMetadata('earliest_timestamp');
+        $latest_timestamp = $this->file->getMetadata('latest_timestamp');
         $currentLog = '';
         $currentLogLevel = '';
         $currentTimestamp = null;
@@ -372,15 +365,15 @@ class LogReader
         $logIndex->setLastScannedFilePosition(ftell($this->fileHandle));
         $logIndex->save();
 
-        $this->file->setMetaData('name', $this->file->name);
-        $this->file->setMetaData('path', $this->file->path);
-        $this->file->setMetaData('size', $this->file->size());
-        $this->file->setMetaData('earliest_timestamp', $this->index()->getEarliestTimestamp());
-        $this->file->setMetaData('latest_timestamp', $this->index()->getLatestTimestamp());
-        $this->file->setMetaData('last_scanned_file_position', ftell($this->fileHandle));
+        $this->file->setMetadata('name', $this->file->name);
+        $this->file->setMetadata('path', $this->file->path);
+        $this->file->setMetadata('size', $this->file->size());
+        $this->file->setMetadata('earliest_timestamp', $this->index()->getEarliestTimestamp());
+        $this->file->setMetadata('latest_timestamp', $this->index()->getLatestTimestamp());
+        $this->file->setMetadata('last_scanned_file_position', ftell($this->fileHandle));
         $this->file->addRelatedIndex($logIndex);
 
-        $this->file->saveMetaData();
+        $this->file->saveMetadata();
 
         // Let's reset the position in preparation for real log reads.
         rewind($this->fileHandle);
@@ -418,7 +411,6 @@ class LogReader
     }
 
     /**
-     * @param  int|null  $limit
      * @return array|Log[]
      */
     public function get(int $limit = null)
@@ -475,7 +467,7 @@ class LogReader
 
     public function total(): int
     {
-        return $this->index()->total();
+        return $this->index()->count();
     }
 
     /**
@@ -523,9 +515,6 @@ class LogReader
     }
 
     /**
-     * @param  int  $index
-     * @param  int  $position
-     * @param  bool  $fullText
      * @return array|null Returns an array, [$level, $text, $position]
      *
      * @throws \Exception

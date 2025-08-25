@@ -87,7 +87,7 @@ class LogViewerService
         if (! isset($this->_cachedFiles)) {
             $this->_cachedFiles = (new LogFileCollection($this->getFilePaths()))
                 ->unique()
-                ->map(fn ($file) => LogFile::fromPath($file))
+                ->map(fn ($filePath) => new LogFile($filePath))
                 ->values();
         }
 
@@ -101,9 +101,6 @@ class LogViewerService
 
     /**
      * Find the file with the given identifier or file name.
-     *
-     * @param  string|null  $fileIdentifier
-     * @return LogFile|null
      */
     public function getFile(?string $fileIdentifier): ?LogFile
     {
@@ -174,10 +171,13 @@ class LogViewerService
         return intval(config('log-viewer.lazy_scan_chunk_size_in_mb', 100)) * 1024 * 1024;
     }
 
+    public function shouldEagerScanLogFiles(): bool
+    {
+        return config('log-viewer.eager_scan', false);
+    }
+
     /**
      * Get the maximum number of bytes of the log that we should display.
-     *
-     * @return int
      */
     public function maxLogSize(): int
     {

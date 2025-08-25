@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -13,14 +14,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('expenses', function (Blueprint $table) {
-            $table->dropForeign('expenses_customer_id_foreign');
-            $table->unsignedInteger('customer_id')->change();
-
-            $table->foreign('customer_id')->references('id')->on('customers')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-        });
+        // Usar DB::statement para evitar problemas de compatibilidad con Doctrine DBAL
+        DB::statement('ALTER TABLE expenses DROP FOREIGN KEY expenses_customer_id_foreign');
+        DB::statement('ALTER TABLE expenses MODIFY customer_id INT UNSIGNED');
+        DB::statement('ALTER TABLE expenses ADD CONSTRAINT expenses_customer_id_foreign FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE ON UPDATE CASCADE');
     }
 
     /**
@@ -30,8 +27,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('expenses', function (Blueprint $table) {
-            //
-        });
+        // Rollback usando DB::statement
+        DB::statement('ALTER TABLE expenses DROP FOREIGN KEY expenses_customer_id_foreign');
     }
 };

@@ -1,8 +1,26 @@
 # Laravel Impersonate Changelog
 
+## 1.7.7
+
+- Laravel 12.x support (thanks to [erikn69](https://github.com/erikn69), [#216](https://github.com/404labfr/laravel-impersonate/pull/216))
+
+## 1.7.6
+
+- Supports for PHP 8.4 (thanks to [MarioGattolla](https://github.com/MarioGattolla), [#211](https://github.com/404labfr/laravel-impersonate/pull/211))
+- Dynamic redirection after leaving impersonation (thanks to [adamjsturge](https://github.com/adamjsturge), [#210](https://github.com/404labfr/laravel-impersonate/pull/210))
+
+## 1.7.5
+
+- Laravel 11.x support (thanks to [erikn69](https://github.com/erikn69), [#195](https://github.com/404labfr/laravel-impersonate/pull/195))
+
+## 1.7.4
+
+- Laravel 10.x support (thanks to [freekmurze](https://github.com/freekmurze), [#175](https://github.
+  com/404labfr/laravel-impersonate/pull/175))
+
 ## 1.7.3
 
-- Laravel 9.x support (thanks to [freekmurze](Freek Van der Herten), [#149](https://github.com/404labfr/laravel-impersonate/pull/149))
+- Laravel 9.x support (thanks to [freekmurze](https://github.com/freekmurze), [#149](https://github.com/404labfr/laravel-impersonate/pull/149))
 
 ## 1.7.2
 

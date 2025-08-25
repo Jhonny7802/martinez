@@ -1,5 +1,0 @@
-<?php
-
-$r instanceof Hello;
-$r instanceof Hello2 ? '' : '=';
-$r instanceof \Hello3 ? '' : '=';

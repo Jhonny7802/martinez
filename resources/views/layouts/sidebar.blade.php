@@ -254,6 +254,30 @@
                 </ul>
             </li>
         @endcanany
+        
+        <!-- Presupuestos y Alertas -->
+        <li class="menu-header side-menus">Presupuestos</li>
+        <li class="nav-item dropdown side-menus">
+            <a class="nav-link has-dropdown" href="#"><i class="fas fa-lg fa-chart-line"></i>
+                <span>Control de Presupuestos</span></a>
+            <ul class="dropdown-menu side-menus">
+                <li class="side-menus {{ Request::is('admin/budget-controls*') ? 'active' : '' }}">
+                    <a href="{{ route('budget-controls.index') }}"><i class="fas fa-lg fa-balance-scale"></i>
+                        <span class="menu-text-wrap">Controles de Presupuesto</span>
+                    </a>
+                </li>
+                <li class="side-menus {{ Request::is('admin/budget-expenses*') ? 'active' : '' }}">
+                    <a href="{{ route('budget-expenses.index') }}"><i class="fas fa-lg fa-money-bill-wave"></i>
+                        <span class="menu-text-wrap">Gastos de Presupuesto</span>
+                    </a>
+                </li>
+                <li class="side-menus {{ Request::is('admin/budget-alerts*') ? 'active' : '' }}">
+                    <a href="{{ route('budget-alerts.index') }}"><i class="fas fa-lg fa-exclamation-triangle"></i>
+                        <span class="menu-text-wrap">Alertas de Presupuesto</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         @can('manage_payment_mode')
             <li class="side-menus {{ Request::is('admin/payment-modes*') ? 'active' : '' }}">
                 <a href="{{ route('payment-modes.index') }}"><i class="fab fa-lg fa-product-hunt"></i>
@@ -278,16 +302,30 @@
                     </a>
                 </li>
             @endcan
-            @canany(['manage_items','manage_items_groups'])
+            @canany(['manage_items','manage_items_groups','manage_materials'])
                 <li class="nav-item dropdown side-menus">
-                    <a class="nav-link has-dropdown" href="#"><i class="fas fa-lg fa-sitemap"></i>
-                        <span>{{ __('messages.products.products') }}</span>
+                    <a class="nav-link has-dropdown" href="#"><i class="fas fa-lg fa-boxes"></i>
+                        <span>Materiales e Inventario</span>
                     </a>
                     <ul class="dropdown-menu side-menus">
                         @can('manage_items')
                             <li class="side-menus {{ Request::is('admin/products*') ? 'active' : '' }}">
                                 <a href="{{ route('products.index') }}"><i class="fas fa-lg fa-sitemap"></i>
                                     <span class="menu-text-wrap">{{ __('messages.products.products') }}</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('manage_materials')
+                            <li class="side-menus {{ Request::is('admin/material-requisitions*') ? 'active' : '' }}">
+                                <a href="{{ route('material-requisitions.index') }}"><i class="fas fa-lg fa-clipboard-list"></i>
+                                    <span class="menu-text-wrap">Requisiciones de Materiales</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view_inventory_reports')
+                            <li class="side-menus {{ Request::is('admin/inventory-reports*') ? 'active' : '' }}">
+                                <a href="#"><i class="fas fa-lg fa-chart-bar"></i>
+                                    <span class="menu-text-wrap">Reportes de Inventario</span>
                                 </a>
                             </li>
                         @endcan
@@ -301,6 +339,33 @@
                 </li>
             @endcan
         @endcanany
+
+        {{-- Enhanced Internal Messages --}}
+        @can('manage_internal_messages')
+            <li class="nav-item dropdown side-menus">
+                <a class="nav-link has-dropdown" href="#"><i class="fas fa-lg fa-comments"></i>
+                    <span>Mensajes Internos</span>
+                </a>
+                <ul class="dropdown-menu side-menus">
+                    <li class="side-menus {{ Request::is('admin/enhanced-messages') ? 'active' : '' }}">
+                        <a href="{{ route('enhanced-messages.index') }}"><i class="fas fa-lg fa-inbox"></i>
+                            <span class="menu-text-wrap">Bandeja de Entrada</span>
+                        </a>
+                    </li>
+                    <li class="side-menus {{ Request::is('admin/enhanced-messages/create') ? 'active' : '' }}">
+                        <a href="{{ route('enhanced-messages.create') }}"><i class="fas fa-lg fa-edit"></i>
+                            <span class="menu-text-wrap">Nuevo Mensaje</span>
+                        </a>
+                    </li>
+                    <li class="side-menus {{ Request::is('admin/enhanced-messages-sent') ? 'active' : '' }}">
+                        <a href="{{ route('enhanced-messages.sent') }}"><i class="fas fa-lg fa-paper-plane"></i>
+                            <span class="menu-text-wrap">Mensajes Enviados</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endcan
+
         @canany(['manage_contracts','manage_contracts_types'])
             <li class="nav-item dropdown side-menus">
                 <a class="nav-link has-dropdown" href="#"><i class="fas fa-lg fa-file-signature"></i>

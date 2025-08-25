@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.0",
         "barryvdh/laravel-dompdf": "^1.0",
+        "doctrine/dbal": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
         "lab404/laravel-impersonate": "^1.7",
         "laracasts/flash": "^3.2",
@@ -25,21 +26,10 @@
         "mews/purifier": "^3.3",
         "opcodesio/log-viewer": "^1.7",
         "spatie/laravel-activitylog": "^4.4",
-        "spatie/laravel-medialibrary": "^10.0",
+        "spatie/laravel-medialibrary": "^9.0",
         "spatie/laravel-permission": "^5.5",
         "tightenco/ziggy": "^1.4",
         "yajra/laravel-datatables-oracle": "^9.19"
-    },
-    "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.6",
-        "barryvdh/laravel-ide-helper": "^2.12",
-        "beyondcode/laravel-query-detector": "^1.6",
-        "imanghafoori/laravel-microscope": "^1.0",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.3",
-        "phpunit/phpunit": "^9.5.10",
-        "fakerphp/faker": "^1.9.1",
-        "spatie/laravel-ignition": "^1.4"
     },
     "config": {
         "optimize-autoloader": true,

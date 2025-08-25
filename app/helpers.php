@@ -175,7 +175,8 @@ function getCurrencyClass($currency = null)
 
     if (empty($defaultCurrency)) {
         if (! $currency) {
-            $defaultCurrency = Setting::where('key', 'current_currency')->first()->value;
+            $currencySetting = Setting::where('key', 'current_currency')->first();
+            $defaultCurrency = $currencySetting ? $currencySetting->value : 'usd';
         }
     }
 

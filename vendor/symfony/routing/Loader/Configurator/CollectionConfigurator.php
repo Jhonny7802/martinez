@@ -23,12 +23,12 @@ class CollectionConfigurator
     use Traits\HostTrait;
     use Traits\RouteTrait;
 
-    private $parent;
-    private $parentConfigurator;
+    private RouteCollection $parent;
+    private ?CollectionConfigurator $parentConfigurator;
     private ?array $parentPrefixes;
     private string|array|null $host = null;
 
-    public function __construct(RouteCollection $parent, string $name, self $parentConfigurator = null, array $parentPrefixes = null)
+    public function __construct(RouteCollection $parent, string $name, ?self $parentConfigurator = null, ?array $parentPrefixes = null)
     {
         $this->parent = $parent;
         $this->name = $name;
@@ -43,6 +43,9 @@ class CollectionConfigurator
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }
 
+    /**
+     * @return void
+     */
     public function __wakeup()
     {
         throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
@@ -81,11 +84,11 @@ class CollectionConfigurator
             if (null === $this->parentPrefixes) {
                 // no-op
             } elseif ($missing = array_diff_key($this->parentPrefixes, $prefix)) {
-                throw new \LogicException(sprintf('Collection "%s" is missing prefixes for locale(s) "%s".', $this->name, implode('", "', array_keys($missing))));
+                throw new \LogicException(\sprintf('Collection "%s" is missing prefixes for locale(s) "%s".', $this->name, implode('", "', array_keys($missing))));
             } else {
                 foreach ($prefix as $locale => $localePrefix) {
                     if (!isset($this->parentPrefixes[$locale])) {
-                        throw new \LogicException(sprintf('Collection "%s" with locale "%s" is missing a corresponding prefix in its parent collection.', $this->name, $locale));
+                        throw new \LogicException(\sprintf('Collection "%s" with locale "%s" is missing a corresponding prefix in its parent collection.', $this->name, $locale));
                     }
 
                     $prefix[$locale] = $this->parentPrefixes[$locale].$localePrefix;
@@ -115,6 +118,9 @@ class CollectionConfigurator
         return $this;
     }
 
+    /**
+     * This method overrides the one from LocalizedRouteTrait.
+     */
     private function createRoute(string $path): Route
     {
         return (clone $this->route)->setPath($path);

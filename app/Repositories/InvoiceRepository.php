@@ -77,6 +77,7 @@ class InvoiceRepository extends BaseRepository
                 ->selectRaw('count(case when payment_status = 3 then 1 end) as partially_paid')
                 ->selectRaw('count(case when payment_status = 4 then 1 end) as cancelled')
                 ->selectRaw('count(case when payment_status != 0 then 1 end) as total_invoices')
+                ->selectRaw('sum(case when payment_status = 2 then total_amount else 0 end) as total_amount')
                 ->where('customer_id', '=', $customerId)->first();
         }
 
@@ -86,6 +87,7 @@ class InvoiceRepository extends BaseRepository
             ->selectRaw('count(case when payment_status = 3 then 1 end) as partially_paid')
             ->selectRaw('count(case when payment_status = 4 then 1 end) as cancelled')
             ->selectRaw('count(*) as total_invoices')
+            ->selectRaw('sum(case when payment_status = 2 then total_amount else 0 end) as total_amount')
             ->first();
     }
 

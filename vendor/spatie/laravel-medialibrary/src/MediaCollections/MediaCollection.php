@@ -28,11 +28,9 @@ class MediaCollection
 
     public bool $singleFile = false;
 
-    /** @var array<string, string> */
-    public array $fallbackUrls = [];
+    public string $fallbackUrl = '';
 
-    /** @var array<string, string> */
-    public array $fallbackPaths = [];
+    public string $fallbackPath = '';
 
     public function __construct(
         public string $name
@@ -99,24 +97,16 @@ class MediaCollection
         $this->mediaConversionRegistrations = $mediaConversionRegistrations;
     }
 
-    public function useFallbackUrl(string $url, string $conversionName = ''): self
+    public function useFallbackUrl(string $url): self
     {
-        if ($conversionName === '') {
-            $conversionName = 'default';
-        }
-
-        $this->fallbackUrls[$conversionName] = $url;
+        $this->fallbackUrl = $url;
 
         return $this;
     }
 
-    public function useFallbackPath(string $path, string $conversionName = ''): self
+    public function useFallbackPath(string $path): self
     {
-        if ($conversionName === '') {
-            $conversionName = 'default';
-        }
-
-        $this->fallbackPaths[$conversionName] = $path;
+        $this->fallbackPath = $path;
 
         return $this;
     }

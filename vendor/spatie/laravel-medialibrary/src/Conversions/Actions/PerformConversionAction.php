@@ -17,15 +17,11 @@ class PerformConversionAction
         Media $media,
         string $copiedOriginalFile
     ) {
+        event(new ConversionWillStart($media, $conversion, $copiedOriginalFile));
+
         $imageGenerator = ImageGeneratorFactory::forMedia($media);
 
         $copiedOriginalFile = $imageGenerator->convert($copiedOriginalFile, $conversion);
-
-        if (! $copiedOriginalFile) {
-            return;
-        }
-
-        event(new ConversionWillStart($media, $conversion, $copiedOriginalFile));
 
         $manipulationResult = (new PerformManipulationsAction())->execute($media, $conversion, $copiedOriginalFile);
 

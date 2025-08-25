@@ -28,6 +28,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerGroupController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EnhancedInternalMessageController;
 use App\Http\Controllers\EstimateController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
@@ -60,6 +61,10 @@ use App\Http\Controllers\TicketReplyController;
 use App\Http\Controllers\TicketStatusController;
 use App\Http\Controllers\TranslationManagerController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BudgetAlertController;
+use App\Http\Controllers\BudgetControlController;
+use App\Http\Controllers\BudgetExpenseController;
+use App\Http\Controllers\MaterialRequisitionController;
 use App\Http\Controllers\Web;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -99,6 +104,7 @@ Route::post('/read-all-notification',
 Route::middleware(['auth', 'xss', 'checkUserStatus', 'checkRoleUrl'])->prefix('admin')->group(function () {
         // Dashboard route
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/contract-month-filter', [DashboardController::class, 'contractMonthFilter'])->name('dashboard.contract-month-filter');
 
     // Customer groups routes
     Route::middleware('permission:manage_customer_groups')->group(function () {
@@ -512,6 +518,76 @@ Route::middleware(['auth', 'xss', 'checkUserStatus', 'checkRoleUrl'])->prefix('a
                 [TicketController::class, 'attachmentDelete'])->name('ticket.attachment');
         Route::get('download-media/{mediaItem}',
                 [TicketController::class, 'download'])->name('ticket.download.media');
+    });
+    
+    // Budget Controls routes
+    Route::middleware('permission:manage_budget_controls')->group(function () {
+        Route::get('budget-controls', [BudgetControlController::class, 'index'])->name('budget-controls.index');
+        Route::post('budget-controls', [BudgetControlController::class, 'store'])->name('budget-controls.store');
+        Route::get('budget-controls/create', [BudgetControlController::class, 'create'])->name('budget-controls.create');
+        Route::get('budget-controls/{budgetControl}', [BudgetControlController::class, 'show'])->name('budget-controls.show');
+        Route::get('budget-controls/{budgetControl}/edit', [BudgetControlController::class, 'edit'])->name('budget-controls.edit');
+        Route::put('budget-controls/{budgetControl}', [BudgetControlController::class, 'update'])->name('budget-controls.update');
+        Route::delete('budget-controls/{budgetControl}', [BudgetControlController::class, 'destroy'])->name('budget-controls.destroy');
+        Route::get('budget-controls/{budgetControl}/report', [BudgetControlController::class, 'report'])->name('budget-controls.report');
+        Route::get('budget-controls/{budgetControl}/report-pdf', [BudgetControlController::class, 'reportPdf'])->name('budget-controls.report-pdf');
+    });
+    
+    // Budget Expenses routes
+    Route::middleware('permission:manage_budget_expenses')->group(function () {
+        Route::get('budget-expenses', [BudgetExpenseController::class, 'index'])->name('budget-expenses.index');
+        Route::post('budget-expenses', [BudgetExpenseController::class, 'store'])->name('budget-expenses.store');
+        Route::get('budget-expenses/create', [BudgetExpenseController::class, 'create'])->name('budget-expenses.create');
+        Route::get('budget-controls/{budgetControl}/add-expense', [BudgetExpenseController::class, 'addExpense'])->name('budget-controls.add-expense');
+        Route::post('budget-controls/{budgetControl}/store-expense', [BudgetExpenseController::class, 'storeExpense'])->name('budget-controls.store-expense');
+        Route::get('budget-expenses/{budgetExpense}', [BudgetExpenseController::class, 'show'])->name('budget-expenses.show');
+        Route::get('budget-expenses/{budgetExpense}/edit', [BudgetExpenseController::class, 'edit'])->name('budget-expenses.edit');
+        Route::put('budget-expenses/{budgetExpense}', [BudgetExpenseController::class, 'update'])->name('budget-expenses.update');
+        Route::delete('budget-expenses/{budgetExpense}', [BudgetExpenseController::class, 'destroy'])->name('budget-expenses.destroy');
+        Route::get('budget-expenses-attachment-download/{budgetExpense}', [BudgetExpenseController::class, 'downloadMedia'])->name('budget-expenses.download-media');
+    });
+    
+    // Budget Alerts routes
+    Route::middleware('permission:manage_budget_alerts')->group(function () {
+        Route::get('budget-alerts', [BudgetAlertController::class, 'index'])->name('budget-alerts.index');
+        Route::get('budget-alerts/report', [BudgetAlertController::class, 'report'])->name('budget-alerts.report');
+        Route::get('budget-alerts/report-pdf', [BudgetAlertController::class, 'reportPdf'])->name('budget-alerts.report-pdf');
+        Route::get('budget-alerts/export-report', [BudgetAlertController::class, 'exportReportPdf'])->name('budget-alerts.export-report');
+        Route::get('budget-alerts/{budgetAlert}', [BudgetAlertController::class, 'show'])->name('budget-alerts.show');
+        Route::post('budget-alerts/{budgetAlert}/acknowledge', [BudgetAlertController::class, 'acknowledge'])->name('budget-alerts.acknowledge');
+    });
+
+    // Material Requisitions routes
+    Route::middleware('permission:manage_materials')->group(function () {
+        Route::resource('material-requisitions', MaterialRequisitionController::class);
+        Route::get('material-requisitions/{materialRequisition}/items', [MaterialRequisitionController::class, 'getItems'])->name('material-requisitions.items');
+        Route::patch('material-requisitions/{materialRequisition}/approve', [MaterialRequisitionController::class, 'approve'])->name('material-requisitions.approve');
+        Route::patch('material-requisitions/{materialRequisition}/deliver', [MaterialRequisitionController::class, 'deliver'])->name('material-requisitions.deliver');
+        Route::patch('material-requisitions/{materialRequisition}/reject', [MaterialRequisitionController::class, 'reject'])->name('material-requisitions.reject');
+        Route::get('material-requisitions-stats', [MaterialRequisitionController::class, 'getStats'])->name('material-requisitions.stats');
+        Route::get('material-requisitions-recent', [MaterialRequisitionController::class, 'getRecent'])->name('material-requisitions.recent');
+    });
+
+    // Enhanced Materials/Inventory routes
+    Route::middleware('permission:manage_materials')->group(function () {
+        Route::get('materials/low-stock', [ProductController::class, 'getLowStock'])->name('materials.low-stock');
+        Route::get('materials/out-of-stock', [ProductController::class, 'getOutOfStock'])->name('materials.out-of-stock');
+        Route::get('materials/{product}/movements', [ProductController::class, 'getMovements'])->name('materials.movements');
+        Route::post('materials/{product}/adjust-stock', [ProductController::class, 'adjustStock'])->name('materials.adjust-stock');
+    });
+
+    // Enhanced Internal Messages routes
+    Route::middleware('permission:manage_internal_messages')->group(function () {
+        Route::resource('enhanced-messages', EnhancedInternalMessageController::class);
+        Route::post('enhanced-messages/{internalMessage}/mark-read', [EnhancedInternalMessageController::class, 'markAsRead'])->name('enhanced-messages.mark-read');
+        Route::post('enhanced-messages/{internalMessage}/reply', [EnhancedInternalMessageController::class, 'reply'])->name('enhanced-messages.reply');
+        Route::post('enhanced-messages/{internalMessage}/forward', [EnhancedInternalMessageController::class, 'forward'])->name('enhanced-messages.forward');
+        Route::post('enhanced-messages/broadcast', [EnhancedInternalMessageController::class, 'broadcast'])->name('enhanced-messages.broadcast');
+        Route::get('enhanced-messages-sent', [EnhancedInternalMessageController::class, 'sent'])->name('enhanced-messages.sent');
+        Route::get('enhanced-messages-unread-count', [EnhancedInternalMessageController::class, 'getUnreadCount'])->name('enhanced-messages.unread-count');
+        Route::get('enhanced-messages-recent', [EnhancedInternalMessageController::class, 'getRecentMessages'])->name('enhanced-messages.recent');
+        Route::post('enhanced-messages-mark-all-read', [EnhancedInternalMessageController::class, 'markAllAsRead'])->name('enhanced-messages.mark-all-read');
+        Route::get('enhanced-messages/{internalMessage}/attachment/{attachmentIndex}', [EnhancedInternalMessageController::class, 'downloadAttachment'])->name('enhanced-messages.download-attachment');
     });
 
     // Ticket Priorities routes

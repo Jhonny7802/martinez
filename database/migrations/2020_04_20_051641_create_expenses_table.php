@@ -31,25 +31,15 @@ return new class extends Migration
             $table->boolean('billable')->default(false);
             $table->timestamps();
 
-            $table->foreign('expense_category_id')->references('id')->on('expense_categories')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('customer_id')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('tax_1_id')->references('id')->on('tax_rates')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('tax_2_id')->references('id')->on('tax_rates')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('payment_mode_id')->references('id')->on('payment_modes')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
         });
     }
 

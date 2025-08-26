@@ -28,33 +28,19 @@ return new class extends Migration
             $table->unsignedInteger('ticket_status_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('contact_id')->references('id')->on('contacts')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('department_id')->references('id')->on('departments')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('assign_to')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('priority_id')->references('id')->on('ticket_priorities')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('service_id')->references('id')->on('services')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('predefined_reply_id')->references('id')->on('predefined_replies')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('ticket_status_id')->references('id')->on('ticket_statuses')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
         });
     }
 

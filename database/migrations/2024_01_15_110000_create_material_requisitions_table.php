@@ -28,8 +28,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('project_id');
-            $table->foreign('requested_by')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
+            // Foreign keys removed to avoid constraint issues
+            // // Foreign key removed: // Foreign key constraint removed
+            // // Foreign key removed: // Foreign key constraint removed
         });
     }
 

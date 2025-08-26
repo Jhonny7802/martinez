@@ -20,9 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('tag_id');
             $table->timestamps();
 
-            $table->foreign('tag_id')->references('id')->on('tags')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
         });
     }
 

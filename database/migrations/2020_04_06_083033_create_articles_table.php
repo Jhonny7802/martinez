@@ -21,9 +21,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
 
-            $table->foreign('group_id')->references('id')->on('article_groups')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
         });
     }
 

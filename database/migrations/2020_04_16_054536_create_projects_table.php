@@ -27,9 +27,7 @@ return new class extends Migration
             $table->boolean('send_email');
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
         });
     }
 

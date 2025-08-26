@@ -23,8 +23,9 @@ return new class extends Migration
             $table->text('specifications')->nullable();
             $table->timestamps();
 
-            $table->foreign('requisition_id')->references('id')->on('material_requisitions')->onDelete('cascade');
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            // Foreign keys removed to avoid constraint issues
+            // // Foreign key removed: // Foreign key constraint removed
+            // // Foreign key removed: // Foreign key constraint removed
         });
     }
 

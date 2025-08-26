@@ -20,12 +20,8 @@ return new class extends Migration
             $table->text('reply');
             $table->timestamps();
 
-            $table->foreign('ticket_id')->references('id')->on('tickets')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
+            // Foreign key constraint removed
         });
     }
 

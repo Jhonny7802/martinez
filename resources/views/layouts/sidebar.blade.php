@@ -341,30 +341,50 @@
         @endcanany
 
         {{-- Enhanced Internal Messages --}}
-        @can('manage_internal_messages')
+        @canany(['view_internal_messages','send_internal_messages','delete_internal_messages','manage_message_templates','view_message_reports'])
             <li class="nav-item dropdown side-menus">
                 <a class="nav-link has-dropdown" href="#"><i class="fas fa-lg fa-comments"></i>
                     <span>Mensajes Internos</span>
                 </a>
                 <ul class="dropdown-menu side-menus">
-                    <li class="side-menus {{ Request::is('admin/enhanced-messages') ? 'active' : '' }}">
-                        <a href="{{ route('enhanced-messages.index') }}"><i class="fas fa-lg fa-inbox"></i>
-                            <span class="menu-text-wrap">Bandeja de Entrada</span>
-                        </a>
-                    </li>
-                    <li class="side-menus {{ Request::is('admin/enhanced-messages/create') ? 'active' : '' }}">
-                        <a href="{{ route('enhanced-messages.create') }}"><i class="fas fa-lg fa-edit"></i>
-                            <span class="menu-text-wrap">Nuevo Mensaje</span>
-                        </a>
-                    </li>
-                    <li class="side-menus {{ Request::is('admin/enhanced-messages-sent') ? 'active' : '' }}">
-                        <a href="{{ route('enhanced-messages.sent') }}"><i class="fas fa-lg fa-paper-plane"></i>
-                            <span class="menu-text-wrap">Mensajes Enviados</span>
-                        </a>
-                    </li>
+                    @can('view_internal_messages')
+                        <li class="side-menus {{ Request::is('admin/enhanced-messages') ? 'active' : '' }}">
+                            <a href="{{ route('enhanced-messages.index') }}"><i class="fas fa-lg fa-inbox"></i>
+                                <span class="menu-text-wrap">Bandeja de Entrada</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('send_internal_messages')
+                        <li class="side-menus {{ Request::is('admin/enhanced-messages/create') ? 'active' : '' }}">
+                            <a href="{{ route('enhanced-messages.create') }}"><i class="fas fa-lg fa-edit"></i>
+                                <span class="menu-text-wrap">Nuevo Mensaje</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('view_internal_messages')
+                        <li class="side-menus {{ Request::is('admin/enhanced-messages-sent') ? 'active' : '' }}">
+                            <a href="{{ route('enhanced-messages.sent') }}"><i class="fas fa-lg fa-paper-plane"></i>
+                                <span class="menu-text-wrap">Mensajes Enviados</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('manage_message_templates')
+                        <li class="side-menus {{ Request::is('admin/message-templates*') ? 'active' : '' }}">
+                            <a href="#"><i class="fas fa-lg fa-file-alt"></i>
+                                <span class="menu-text-wrap">Plantillas de Mensajes</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('view_message_reports')
+                        <li class="side-menus {{ Request::is('admin/message-reports*') ? 'active' : '' }}">
+                            <a href="#"><i class="fas fa-lg fa-chart-bar"></i>
+                                <span class="menu-text-wrap">Reportes de Mensajes</span>
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
             </li>
-        @endcan
+        @endcanany
 
         @canany(['manage_contracts','manage_contracts_types'])
             <li class="nav-item dropdown side-menus">

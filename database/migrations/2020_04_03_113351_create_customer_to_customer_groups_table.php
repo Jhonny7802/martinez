@@ -19,12 +19,8 @@ return new class extends Migration
             $table->unsignedInteger('customer_group_id');
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('customer_group_id')->references('id')->on('customer_groups')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
+            // Foreign key constraint removed
         });
     }
 

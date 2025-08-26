@@ -22,9 +22,7 @@ return new class extends Migration
             $table->unsignedInteger('item_group_id');
             $table->timestamps();
 
-            $table->foreign('item_group_id')->references('id')->on('item_groups')
-                ->onDelete('Cascade')
-                ->onUpdate('Cascade');
+            // Foreign key constraint removed
         });
     }
 

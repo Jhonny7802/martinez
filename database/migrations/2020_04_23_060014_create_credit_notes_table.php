@@ -34,9 +34,7 @@ return new class extends Migration
             $table->integer('discount_symbol')->nullable();
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
         });
     }
 

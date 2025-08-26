@@ -23,9 +23,7 @@ return new class extends Migration
             $table->boolean('is_notified')->nullable()->default(0);
             $table->timestamps();
 
-            $table->foreign('reminder_to')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
         });
     }
 

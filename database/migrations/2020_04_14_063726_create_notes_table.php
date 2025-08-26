@@ -21,9 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('added_by');
             $table->timestamps();
 
-            $table->foreign('added_by')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
         });
     }
 

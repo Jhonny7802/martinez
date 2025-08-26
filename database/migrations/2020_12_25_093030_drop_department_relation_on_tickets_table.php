@@ -14,21 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::table('tickets', function (Blueprint $table) {
-            $table->dropForeign('tickets_contact_id_foreign');
-            $table->dropForeign('tickets_department_id_foreign');
-            $table->dropForeign('tickets_assign_to_foreign');
+            // Dropped foreign key: // Foreign key constraint removed
+            // Dropped foreign key: // Foreign key constraint removed
+            // Dropped foreign key: // Foreign key constraint removed
 
-            $table->foreign('contact_id')->references('id')->on('contacts')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
+            // Foreign key constraint removed
 
-            $table->foreign('department_id')->references('id')->on('departments')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
+            // Foreign key constraint removed
 
-            $table->foreign('assign_to')->references('id')->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
+            // Foreign key constraint removed
         });
     }
 };

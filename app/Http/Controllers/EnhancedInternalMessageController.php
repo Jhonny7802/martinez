@@ -249,7 +249,11 @@ class EnhancedInternalMessageController extends AppBaseController
                 ->make(true);
         }
 
-        return view('internal_messages.enhanced.sent');
+        $messages = InternalMessage::where('sender_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return view('internal_messages.enhanced.sent', compact('messages'));
     }
 
     public function getUnreadCount()

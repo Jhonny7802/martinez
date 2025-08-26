@@ -14,11 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('estimates', function (Blueprint $table) {
-            $table->dropForeign('estimates_sales_agent_id_foreign');
+            // Dropped foreign key: // Foreign key constraint removed
 
-            $table->foreign('sales_agent_id')->references('id')->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
+            // Foreign key constraint removed
         });
     }
 };

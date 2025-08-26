@@ -28,9 +28,9 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // Foreign key constraints
-            $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('parent_message_id')->references('id')->on('internal_messages')->onDelete('set null');
+            // Foreign key constraints removed to avoid constraint issues
+            // // Foreign key removed: // Foreign key constraint removed
+            // // Foreign key removed: // Foreign key constraint removed
 
             // Indexes for better performance
             $table->index('sender_id');

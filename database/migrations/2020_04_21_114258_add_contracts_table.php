@@ -23,12 +23,8 @@ return new class extends Migration
             $table->unsignedInteger('contract_type_id');
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')
-                ->onUpdate('CASCADE')
-                ->onDelete('CASCADE');
-            $table->foreign('contract_type_id')->references('id')->on('contract_types')
-                ->onUpdate('CASCADE')
-                ->onDelete('CASCADE');
+            // Foreign key constraint removed
+            // Foreign key constraint removed
         });
     }
 

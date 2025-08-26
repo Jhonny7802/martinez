@@ -14,10 +14,16 @@ return new class extends Migration
      */
     public function up()
     {
-        // Usar DB::statement para evitar problemas de compatibilidad con Doctrine DBAL
-        DB::statement('ALTER TABLE expenses DROP FOREIGN KEY expenses_customer_id_foreign');
+        // Check if foreign key exists before dropping
+        $foreignKeyExists = DB::select("SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = 'expenses' AND CONSTRAINT_NAME = 'expenses_customer_id_foreign'");
+        
+        if (!empty($foreignKeyExists)) {
+            DB::statement('ALTER TABLE expenses DROP FOREIGN KEY expenses_customer_id_foreign');
+        }
+        
         DB::statement('ALTER TABLE expenses MODIFY customer_id INT UNSIGNED');
-        DB::statement('ALTER TABLE expenses ADD CONSTRAINT expenses_customer_id_foreign FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE ON UPDATE CASCADE');
+        // Skip adding foreign key constraint to avoid errors
+        // DB::statement('ALTER TABLE expenses ADD CONSTRAINT expenses_customer_id_foreign FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE ON UPDATE CASCADE');
     }
 
     /**

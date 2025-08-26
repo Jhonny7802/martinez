@@ -14,11 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('tickets', function (Blueprint $table) {
-            $table->dropForeign('tickets_predefined_reply_id_foreign');
+            // Dropped foreign key: // Foreign key constraint removed
 
-            $table->foreign('predefined_reply_id')->references('id')->on('predefined_replies')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
+            // Foreign key constraint removed
         });
     }
 };

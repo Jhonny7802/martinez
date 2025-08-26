@@ -32,15 +32,9 @@ return new class extends Migration
             $table->dateTime('date_contacted')->nullable();
             $table->timestamps();
 
-            $table->foreign('status_id')->references('id')->on('lead_statuses')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('source_id')->references('id')->on('lead_sources')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('assign_to')->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
+            // Foreign key constraint removed
+            // Foreign key constraint removed
         });
     }
 

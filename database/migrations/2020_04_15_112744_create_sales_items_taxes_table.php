@@ -19,13 +19,9 @@ return new class extends Migration
             $table->unsignedInteger('tax_id');
             $table->timestamps();
 
-            $table->foreign('tax_id')->references('id')->on('tax_rates')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('sales_item_id')->references('id')->on('sales_items')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
         });
     }
 

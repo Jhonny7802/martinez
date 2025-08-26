@@ -19,13 +19,9 @@ return new class extends Migration
             $table->unsignedInteger('email_notification_id');
             $table->timestamps();
 
-            $table->foreign('contact_id')->references('id')->on('contacts')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('email_notification_id')->references('id')->on('email_notifications')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
         });
     }
 

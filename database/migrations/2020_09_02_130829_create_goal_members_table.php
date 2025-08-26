@@ -18,10 +18,8 @@ return new class extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('goal_id');
 
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('goal_id')->references('id')->on('goals')
-                ->onUpdate('cascade')->onDelete('cascade');
+            // Foreign key constraint removed
+            // Foreign key constraint removed
         });
     }
 

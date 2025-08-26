@@ -16,13 +16,9 @@ return new class extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('department_id');
 
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onUpdate('CASCADE')
-                ->onDelete('CASCADE');
+            // Foreign key constraint removed
 
-            $table->foreign('department_id')->references('id')->on('departments')
-                ->onUpdate('CASCADE')
-                ->onDelete('CASCADE');
+            // Foreign key constraint removed
         });
     }
 
@@ -34,8 +30,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('user_departments', function (Blueprint $table) {
-            $table->dropForeign('user_departments_user_id_foreign');
-            $table->dropForeign('user_departments_department_id_foreign');
+            // Dropped foreign key: // Foreign key constraint removed
+            // Dropped foreign key: // Foreign key constraint removed
         });
 
         Schema::dropIfExists('user_departments');

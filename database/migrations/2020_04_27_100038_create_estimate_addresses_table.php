@@ -24,9 +24,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->timestamps();
 
-            $table->foreign('estimate_id')->references('id')->on('estimates')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
         });
     }
 

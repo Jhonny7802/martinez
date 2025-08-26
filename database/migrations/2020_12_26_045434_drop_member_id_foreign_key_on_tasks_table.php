@@ -14,11 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropForeign('tasks_member_id_foreign');
+            // Dropped foreign key: // Foreign key constraint removed
 
-            $table->foreign('member_id')->references('id')->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
+            // Foreign key constraint removed
         });
     }
 

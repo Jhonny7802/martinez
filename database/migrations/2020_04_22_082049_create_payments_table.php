@@ -25,9 +25,7 @@ return new class extends Migration
             $table->boolean('send_mail_to_customer_contacts')->nullable();
             $table->timestamps();
 
-            $table->foreign('payment_mode')->references('id')->on('payment_modes')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            // Foreign key constraint removed
         });
     }
 

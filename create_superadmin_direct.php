@@ -1,56 +1,44 @@
 <?php
 
-// Autoload de Composer
-require __DIR__ . '/vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
-// Cargar el entorno de Laravel
-$app = require_once __DIR__ . '/bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-$kernel->bootstrap();
+use Illuminate\Database\Capsule\Manager as Capsule;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+// Configurar la conexión a la base de datos
+$capsule = new Capsule;
+$capsule->addConnection([
+    'driver'    => 'mysql',
+    'host'      => 'localhost',
+    'database'  => 'martinez',
+    'username'  => 'root',
+    'password'  => '',
+    'charset'   => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'prefix'    => '',
+]);
 
-// Crear usuario superadmin
-$user = User::updateOrCreate(
-    ['email' => 'superadmin@martinez.com'],
-    [
-        'first_name' => 'Super',
-        'last_name' => 'Admin',
-        'email' => 'superadmin@martinez.com',
-        'password' => Hash::make('superadmin123'),
-        'phone' => '12345678',
-        'email_verified_at' => now(),
-        'is_active' => true,
-    ]
-);
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
 
-echo "Usuario superadmin creado o actualizado correctamente.\n";
-
-// Asignar rol de admin
-$adminRole = Role::where('name', 'admin')->first();
-if ($adminRole) {
-    $user->assignRole($adminRole);
-    echo "Rol admin asignado al usuario superadmin.\n";
-} else {
-    echo "No se encontró el rol admin.\n";
-}
-
-// Asignar todos los permisos directamente al usuario
-$permissions = Permission::all();
-foreach ($permissions as $permission) {
-    try {
-        $user->givePermissionTo($permission->name);
-    } catch (Exception $e) {
-        echo "Error al asignar permiso {$permission->name}: {$e->getMessage()}\n";
+try {
+    // Verificar conexión
+    echo "Verificando conexión a la base de datos...\n";
+    $tables = Capsule::select("SHOW TABLES");
+    echo "Conexión exitosa. Tablas encontradas: " . count($tables) . "\n";
+    
+    // Verificar tabla users
+    $userTableExists = Capsule::select("SHOW TABLES LIKE 'users'");
+    if (empty($userTableExists)) {
+        echo "Error: La tabla 'users' no existe.\n";
+        exit(1);
     }
-}
-
-echo "Todos los permisos asignados al usuario superadmin.\n";
-
-// Crear permisos específicos para presupuestos si no existen
+    echo "Tabla 'users' encontrada.\n";
+    
+    // Verificar usuarios existentes
+    $existingUsers = Capsule::table('users')->get();
+    echo "Usuarios existentes: " . count($existingUsers) . "\n";
+    foreach ($existingUsers as $user) {
+        echo "- ID: {$user->id}, Email: {$user->email}, Nombre: {$user->first_name} {$user->last_name}\n";
 $budgetPermissions = [
     'manage_budget_controls' => 'Gestionar controles de presupuesto',
     'manage_budget_expenses' => 'Gestionar gastos de presupuesto',

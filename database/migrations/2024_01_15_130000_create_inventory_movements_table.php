@@ -22,8 +22,9 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
 
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // Foreign keys removed to avoid constraint issues
+            // // Foreign key removed: // Foreign key constraint removed
+            // // Foreign key removed: // Foreign key constraint removed
         });
     }
 

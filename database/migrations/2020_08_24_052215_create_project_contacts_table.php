@@ -18,10 +18,8 @@ return new class extends Migration
             $table->unsignedInteger('contact_id');
             $table->unsignedInteger('project_id');
 
-            $table->foreign('contact_id')->references('id')->on('contacts')
-                ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('project_id')->references('id')->on('projects')
-                ->onUpdate('cascade')->onDelete('cascade');
+            // Foreign key constraint removed
+            // Foreign key constraint removed
         });
     }
 

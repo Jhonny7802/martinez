@@ -19,13 +19,9 @@ return new class extends Migration
             $table->unsignedInteger('invoice_id');
             $table->timestamps();
 
-            $table->foreign('payment_mode_id')->references('id')->on('payment_modes')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
 
-            $table->foreign('invoice_id')->references('id')->on('invoices')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // Foreign key constraint removed
         });
     }
 

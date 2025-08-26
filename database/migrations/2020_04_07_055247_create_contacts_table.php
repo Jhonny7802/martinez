@@ -23,12 +23,8 @@ return new class extends Migration
             $table->boolean('send_password_email')->default(0);
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')
-                ->onDelete('Cascade')
-                ->onUpdate('Cascade');
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onDelete('Cascade')
-                ->onUpdate('Cascade');
+            // Foreign key constraint removed
+            // Foreign key constraint removed
         });
     }
 

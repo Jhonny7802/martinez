@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['php82', 'php82Extensions.bcmath', 'php82Extensions.ctype', 'php82Extensions.fileinfo', 'php82Extensions.mbstring', 'php82Extensions.openssl', 'php82Extensions.pdo', 'php82Extensions.pdo_mysql', 'php82Extensions.tokenizer', 'php82Extensions.xml', 'php82Extensions.zip', 'php82Packages.composer', 'nodejs-16_x', 'npm-8_x']
+nixPkgs = ['php82', 'php82Extensions.bcmath', 'php82Extensions.ctype', 'php82Extensions.fileinfo', 'php82Extensions.mbstring', 'php82Extensions.openssl', 'php82Extensions.pdo', 'php82Extensions.pdo_mysql', 'php82Extensions.tokenizer', 'php82Extensions.xml', 'php82Extensions.zip', 'php82Packages.composer', 'nodejs_16', 'nodePackages.npm']
 
 [phases.build]
 cmds = [

@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['php81', 'php81Extensions.bcmath', 'php81Extensions.ctype', 'php81Extensions.fileinfo', 'php81Extensions.mbstring', 'php81Extensions.openssl', 'php81Extensions.pdo', 'php81Extensions.pdo_mysql', 'php81Extensions.tokenizer', 'php81Extensions.xml', 'php81Extensions.zip', 'php81Packages.composer', 'nodejs-18_x', 'npm-9_x']
+nixPkgs = ['php82', 'php82Extensions.bcmath', 'php82Extensions.ctype', 'php82Extensions.fileinfo', 'php82Extensions.mbstring', 'php82Extensions.openssl', 'php82Extensions.pdo', 'php82Extensions.pdo_mysql', 'php82Extensions.tokenizer', 'php82Extensions.xml', 'php82Extensions.zip', 'php82Packages.composer', 'nodejs-18_x', 'npm-9_x']
 
 [phases.build]
 cmds = [
@@ -12,4 +12,4 @@ cmds = [
 cmd = 'php artisan serve --host=0.0.0.0 --port=$PORT'
 
 [variables]
-PHP_VERSION = "8.1"
+PHP_VERSION = "8.2"

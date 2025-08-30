@@ -7,7 +7,7 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "NODE_ENV=production node_modules/.bin/webpack --mode=production --progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "NODE_ENV=production npx webpack --mode=production --progress --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
         "axios": "^0.25",

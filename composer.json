@@ -29,7 +29,8 @@
         "spatie/laravel-medialibrary": "^9.0",
         "spatie/laravel-permission": "^5.5",
         "tightenco/ziggy": "^1.4",
-        "yajra/laravel-datatables-oracle": "^9.19"
+        "yajra/laravel-datatables-oracle": "^9.19",
+        "ext-pdo_pgsql": "*"
     },
     "config": {
         "optimize-autoloader": true,

@@ -64,6 +64,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BudgetAlertController;
 use App\Http\Controllers\BudgetControlController;
 use App\Http\Controllers\BudgetExpenseController;
+use App\Http\Controllers\CaiBillingController;
+use App\Http\Controllers\DesignGenerationController;
 use App\Http\Controllers\MaterialRequisitionController;
 use App\Http\Controllers\Web;
 use Illuminate\Support\Facades\Auth;
@@ -588,6 +590,33 @@ Route::middleware(['auth', 'xss', 'checkUserStatus', 'checkRoleUrl'])->prefix('a
         Route::get('enhanced-messages-recent', [EnhancedInternalMessageController::class, 'getRecentMessages'])->name('enhanced-messages.recent');
         Route::post('enhanced-messages-mark-all-read', [EnhancedInternalMessageController::class, 'markAllAsRead'])->name('enhanced-messages.mark-all-read');
         Route::get('enhanced-messages/{internalMessage}/attachment/{attachmentIndex}', [EnhancedInternalMessageController::class, 'downloadAttachment'])->name('enhanced-messages.download-attachment');
+    });
+
+    // CAI Billing routes
+    Route::middleware('permission:manage_invoices')->group(function () {
+        Route::get('cai-billings', [CaiBillingController::class, 'index'])->name('cai-billings.index');
+        Route::get('cai-billings/create', [CaiBillingController::class, 'create'])->name('cai-billings.create');
+        Route::post('cai-billings', [CaiBillingController::class, 'store'])->name('cai-billings.store');
+        Route::get('cai-billings/{caiBilling}', [CaiBillingController::class, 'show'])->name('cai-billings.show');
+        Route::get('cai-billings/{caiBilling}/edit', [CaiBillingController::class, 'edit'])->name('cai-billings.edit');
+        Route::put('cai-billings/{caiBilling}', [CaiBillingController::class, 'update'])->name('cai-billings.update');
+        Route::delete('cai-billings/{caiBilling}', [CaiBillingController::class, 'destroy'])->name('cai-billings.destroy');
+        Route::post('cai-billings/{caiBilling}/change-status', [CaiBillingController::class, 'changeStatus'])->name('cai-billings.change-status');
+        Route::get('cai-billings/customer-data/{customer}', [CaiBillingController::class, 'getCustomerData'])->name('cai-billings.customer-data');
+        Route::get('cai-billings/{caiBilling}/pdf', [CaiBillingController::class, 'generatePdf'])->name('cai-billings.pdf');
+    });
+
+    // Design Generation routes
+    Route::middleware('auth')->group(function () {
+        Route::resource('design-projects', DesignGenerationController::class);
+        Route::post('design-projects/{designProject}/generate-preview', [DesignGenerationController::class, 'generatePreview'])->name('design-projects.generate-preview');
+        Route::get('design-projects/{designProject}/preview', [DesignGenerationController::class, 'preview'])->name('design-projects.preview');
+        Route::get('design-projects/{designProject}/export', [DesignGenerationController::class, 'export'])->name('design-projects.export');
+        Route::get('design-templates/by-category', [DesignGenerationController::class, 'getTemplatesByCategory'])->name('design-templates.by-category');
+        
+        // Design Templates routes (placeholder for future implementation)
+        Route::get('design-templates', function() { return redirect()->route('design-projects.index'); })->name('design-templates.index');
+        Route::get('design-gallery', function() { return redirect()->route('design-projects.index'); })->name('design-gallery.index');
     });
 
     // Ticket Priorities routes

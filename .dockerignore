@@ -1,0 +1,65 @@
+# Laravel specific
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# IDE
+/.idea
+/.vscode
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Logs
+*.log
+/storage/logs/*
+
+# Cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
+
+# Testing
+/tests
+phpunit.xml
+
+# Development files
+webpack.mix.js
+package*.json
+.styleci.yml
+.editorconfig
+
+# Custom scripts (keep only necessary ones)
+add_*.php
+check_*.php
+create_*.php
+drop_*.php
+fix_*.php
+recreate_*.php
+register_*.php
+superadmin_*.php
+verify_*.php
+*.sql
+*.txt
+*.log
+dist.zip
+output.log

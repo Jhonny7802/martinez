@@ -184,30 +184,9 @@
                     <span>{{ __('messages.sales') }}</span></a>
                 <ul class="dropdown-menu side-menus">
                     @can('manage_invoices')
-                        <li class="side-menus {{ Request::is('admin/invoices*') ? 'active' : '' }}">
-                            <a href="{{ route('invoices.index') }}"><i class="fas fa-lg fa-file-invoice"></i>
-                                <span class="menu-text-wrap">{{ __('messages.invoices') }}</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('manage_credit_notes')
-                        <li class="side-menus {{ Request::is('admin/credit-notes*') ? 'active' : '' }}">
-                            <a href="{{ route('credit-notes.index') }}"><i class="fas fa-lg fa-clipboard"></i>
-                                <span class="menu-text-wrap">{{ __('messages.credit_notes') }}</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('manage_proposals')
-                        <li class="side-menus {{ Request::is('admin/proposals*') ? 'active' : '' }}">
-                            <a href="{{ route('proposals.index') }}"><i class="fas fa-lg fa-scroll"></i>
-                                <span class="menu-text-wrap">{{ __('messages.proposals') }}</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('manage_estimates')
-                        <li class="side-menus {{ Request::is('admin/estimates*') ? 'active' : '' }}">
-                            <a href="{{ route('estimates.index') }}"><i class="fas fa-lg fa-calculator"></i>
-                                <span class="menu-text-wrap">{{ __('messages.contact.estimates') }}</span>
+                        <li class="side-menus {{ Request::is('admin/cai-billings*') ? 'active' : '' }}">
+                            <a href="{{ route('cai-billings.index') }}"><i class="fas fa-lg fa-file-invoice-dollar"></i>
+                                <span class="menu-text-wrap">Facturación CAI</span>
                             </a>
                         </li>
                     @endcan
@@ -254,6 +233,30 @@
                 </ul>
             </li>
         @endcanany
+        
+        <!-- Módulo de Generación de Diseño -->
+        <li class="menu-header side-menus">Diseño y Creatividad</li>
+        <li class="nav-item dropdown side-menus">
+            <a class="nav-link has-dropdown" href="#"><i class="fas fa-lg fa-palette"></i>
+                <span>Generación de Diseño</span></a>
+            <ul class="dropdown-menu side-menus">
+                <li class="side-menus {{ Request::is('admin/design-projects*') ? 'active' : '' }}">
+                    <a href="{{ route('design-projects.index') }}"><i class="fas fa-lg fa-project-diagram"></i>
+                        <span class="menu-text-wrap">Proyectos de Diseño</span>
+                    </a>
+                </li>
+                <li class="side-menus {{ Request::is('admin/design-templates*') ? 'active' : '' }}">
+                    <a href="{{ route('design-templates.index') }}"><i class="fas fa-lg fa-layer-group"></i>
+                        <span class="menu-text-wrap">Plantillas de Diseño</span>
+                    </a>
+                </li>
+                <li class="side-menus {{ Request::is('admin/design-gallery*') ? 'active' : '' }}">
+                    <a href="{{ route('design-gallery.index') }}"><i class="fas fa-lg fa-images"></i>
+                        <span class="menu-text-wrap">Galería de Diseños</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         
         <!-- Presupuestos y Alertas -->
         <li class="menu-header side-menus">Presupuestos</li>

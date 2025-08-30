@@ -1,0 +1,185 @@
+-- =====================================================
+-- MÓDULO DE GENERACIÓN DE DISEÑO - TABLAS SQL
+-- =====================================================
+
+-- Tabla de plantillas de diseño
+CREATE TABLE `design_templates` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'general',
+  `dimensions` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1920x1080',
+  `default_elements` json DEFAULT NULL,
+  `preview_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `style_properties` json DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `design_templates_category_is_active_index` (`category`,`is_active`),
+  KEY `design_templates_created_by_foreign` (`created_by`),
+  CONSTRAINT `design_templates_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla de proyectos de diseño
+CREATE TABLE `design_projects` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_id` bigint(20) UNSIGNED NOT NULL,
+  `template_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `dimensions` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1920x1080',
+  `color_scheme` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '#000000,#FFFFFF',
+  `deadline` date DEFAULT NULL,
+  `budget` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `priority` enum('low','medium','high','urgent') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'medium',
+  `status` enum('draft','in_progress','review','completed','cancelled') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft',
+  `preview_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `final_design` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `preview_generated_at` timestamp NULL DEFAULT NULL,
+  `completed_at` timestamp NULL DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `design_projects_customer_id_status_index` (`customer_id`,`status`),
+  KEY `design_projects_priority_deadline_index` (`priority`,`deadline`),
+  KEY `design_projects_status_created_at_index` (`status`,`created_at`),
+  KEY `design_projects_template_id_foreign` (`template_id`),
+  KEY `design_projects_created_by_foreign` (`created_by`),
+  CONSTRAINT `design_projects_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `design_projects_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `design_templates` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `design_projects_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla de elementos de diseño
+CREATE TABLE `design_elements` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `design_project_id` bigint(20) UNSIGNED NOT NULL,
+  `element_type` enum('text','image','shape','logo','icon') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `position_x` decimal(8,2) NOT NULL DEFAULT '0.00',
+  `position_y` decimal(8,2) NOT NULL DEFAULT '0.00',
+  `width` decimal(8,2) NOT NULL,
+  `height` decimal(8,2) NOT NULL,
+  `layer_order` int(11) NOT NULL DEFAULT '1',
+  `style_properties` json DEFAULT NULL,
+  `is_locked` tinyint(1) NOT NULL DEFAULT '0',
+  `is_visible` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `design_elements_design_project_id_layer_order_index` (`design_project_id`,`layer_order`),
+  KEY `design_elements_element_type_is_visible_index` (`element_type`,`is_visible`),
+  CONSTRAINT `design_elements_design_project_id_foreign` FOREIGN KEY (`design_project_id`) REFERENCES `design_projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- TABLA CAI BILLINGS (FACTURACIÓN CAI)
+-- =====================================================
+
+CREATE TABLE `cai_billings` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cai_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `invoice_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_id` bigint(20) UNSIGNED NOT NULL,
+  `customer_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_rtn` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `customer_address` text COLLATE utf8mb4_unicode_ci,
+  `subtotal` decimal(15,2) NOT NULL,
+  `tax_amount` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `discount_amount` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `total_amount` decimal(15,2) NOT NULL,
+  `issue_date` date NOT NULL,
+  `due_date` date DEFAULT NULL,
+  `status` enum('draft','issued','paid','cancelled') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft',
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `payment_method` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payment_date` date DEFAULT NULL,
+  `items` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cai_billings_cai_number_unique` (`cai_number`),
+  UNIQUE KEY `cai_billings_invoice_number_unique` (`invoice_number`),
+  KEY `cai_billings_cai_number_status_index` (`cai_number`,`status`),
+  KEY `cai_billings_customer_id_issue_date_index` (`customer_id`,`issue_date`),
+  CONSTRAINT `cai_billings_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabla de items de facturación CAI
+CREATE TABLE `cai_billing_items` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cai_billing_id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `quantity` decimal(10,3) NOT NULL,
+  `unit_price` decimal(15,2) NOT NULL,
+  `tax_rate` decimal(5,2) NOT NULL DEFAULT '15.00',
+  `subtotal` decimal(15,2) NOT NULL,
+  `tax_amount` decimal(15,2) NOT NULL,
+  `total` decimal(15,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cai_billing_items_cai_billing_id_index` (`cai_billing_id`),
+  KEY `cai_billing_items_product_id_foreign` (`product_id`),
+  CONSTRAINT `cai_billing_items_cai_billing_id_foreign` FOREIGN KEY (`cai_billing_id`) REFERENCES `cai_billings` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cai_billing_items_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `items` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- DATOS DE EJEMPLO PARA PLANTILLAS DE DISEÑO
+-- =====================================================
+
+INSERT INTO `design_templates` (`name`, `description`, `category`, `dimensions`, `default_elements`, `is_active`, `created_at`, `updated_at`) VALUES
+('Plantilla Básica', 'Plantilla básica para diseños generales', 'general', '1920x1080', '[]', 1, NOW(), NOW()),
+('Flyer Promocional', 'Plantilla para flyers promocionales', 'marketing', '210x297', '[]', 1, NOW(), NOW()),
+('Banner Web', 'Plantilla para banners web', 'web', '1200x300', '[]', 1, NOW(), NOW()),
+('Tarjeta de Presentación', 'Plantilla para tarjetas de presentación', 'business', '90x50', '[]', 1, NOW(), NOW()),
+('Poster Evento', 'Plantilla para posters de eventos', 'events', '420x594', '[]', 1, NOW(), NOW());
+
+-- =====================================================
+-- ÍNDICES ADICIONALES PARA OPTIMIZACIÓN
+-- =====================================================
+
+-- Índices para mejorar rendimiento en consultas frecuentes
+CREATE INDEX idx_design_projects_customer_priority ON design_projects(customer_id, priority);
+CREATE INDEX idx_design_projects_status_deadline ON design_projects(status, deadline);
+CREATE INDEX idx_design_elements_project_type ON design_elements(design_project_id, element_type);
+CREATE INDEX idx_cai_billings_status_date ON cai_billings(status, issue_date);
+CREATE INDEX idx_cai_billings_customer_status ON cai_billings(customer_id, status);
+
+-- =====================================================
+-- COMENTARIOS SOBRE LAS TABLAS
+-- =====================================================
+
+/*
+DESIGN_TEMPLATES:
+- Almacena plantillas predefinidas para diseños
+- Permite categorización y configuración de elementos por defecto
+- Incluye propiedades de estilo y vista previa
+
+DESIGN_PROJECTS:
+- Proyectos de diseño individuales para clientes
+- Gestión de estados, prioridades y plazos
+- Vinculación con plantillas y clientes
+
+DESIGN_ELEMENTS:
+- Elementos individuales dentro de cada proyecto
+- Posicionamiento preciso con coordenadas
+- Propiedades de estilo en formato JSON
+- Control de capas y visibilidad
+
+CAI_BILLINGS:
+- Facturación con numeración CAI (Honduras)
+- Estados de factura y métodos de pago
+- Almacenamiento de datos del cliente
+
+CAI_BILLING_ITEMS:
+- Items detallados de cada factura
+- Cálculos de impuestos y totales
+- Vinculación con productos del catálogo
+*/

@@ -3,9 +3,9 @@ nixPkgs = ['php82', 'php82Extensions.bcmath', 'php82Extensions.ctype', 'php82Ext
 
 [phases.build]
 cmds = [
+    'composer install --no-dev --optimize-autoloader',
     'npm ci',
-    'npm run production',
-    'composer install --no-dev --optimize-autoloader'
+    'npx mix --production'
 ]
 
 [phases.start]
